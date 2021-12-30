@@ -9,7 +9,7 @@
 <body class ="insBody">
     <main>
         <section class= "formulaire">
-            <h2 class= "sous-titre" >Inscription</h2>
+            <h2 class= "sous-titre" >Connexion</h2>
             <form class= "form"  method= "post">
                
                     <div class= "form-group">
@@ -27,8 +27,5 @@
                     </div> 
             </form>
         </section>
-    </main>
-    
-</body>
-</html>
+       
 
