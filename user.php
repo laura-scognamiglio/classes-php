@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('index.php');
 //création d'une classe user avec ses attributs privés ou publiques. Les functions login et register doivent être flottantes qui doivent être ds aucunes classes . Elles feront une redirection 
 //les post de form ds une session 
@@ -14,12 +15,12 @@ class User{
 //constructeur regarder pourquoi il ne prends pas de paramètres ou si oui il en prends. S'il en prds il faut enlever le id->this  et le private id de la classe
     public function __construct(){
 //rajouter les paramètres ds le construct en disans que login = postdelogin etc.. 
-        $this->id = $id;
-        $this->login = $login;
-        $this->email = $email;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
-        $this->bdd = $bdd;
+        @$this->id = $id;
+        @$this->login = $login;
+        @$this->email = $email;
+        @$this->firstname = $firstname;
+        @$this->lastname = $lastname;
+        @$this->bdd = $bdd;
     }
 
     public function con(){
@@ -83,7 +84,8 @@ class User{
         var_dump($checking);
         echo "</pre>";
        
-        
+        $post_login = htmlspecialchars(trim($_POST['login']));
+
 
         if(isset($_POST["submit"]))
         {  
@@ -92,8 +94,8 @@ class User{
             {
                 if($post_login  == $checking["login"]){
                 echo "user connected " . "<br>";
-                //session start devrait etre au début le page et même mieuc il devrait être dans un autre fichiers qui contient ma méthode. Chaque méthode son fichier 
-                session_start();
+                //session start devrait etre au début le page et même mieux il devrait être dans un autre fichiers qui contient ma méthode. Chaque méthode son fichier 
+                
                     
                 }
                 
@@ -125,6 +127,9 @@ class User{
 
         $register = $this->con();
 
+        $post_login = htmlspecialchars(trim($_POST['login']));
+
+
         $delete = mysqli_query($register,"DELETE FROM `utilisateurs` WHERE `login`= '$post_login'");
         $session_to_delete = $this->disconnect();
 
@@ -134,7 +139,7 @@ class User{
 
         $register = $this->con();
         $connect = $this->connect();
-        session_start();
+        // session_start();
         $post_login = htmlspecialchars(trim($_POST['login']));
 
 
