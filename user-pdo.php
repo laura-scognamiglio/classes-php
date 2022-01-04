@@ -129,12 +129,10 @@ class Userpdo{
     public function delete(){
         $con = $this->con();
         // $count_to_delete = $this->disconnect();
-        $session_to_deco = $this->connect(@$con,@$login, @$password);
+        
 
-        @$login_session = $_SESSION['login'];
-            echo "<pre>";
-            var_dump($_SESSION);
-            echo "</pre>";
+        @$login_session = $_POST['login'];
+            
 
         if(isset($_POST['delete'])){
             $del = ("DELETE FROM `utilisateurs` WHERE `login`= '$login_session'");
@@ -144,23 +142,93 @@ class Userpdo{
             echo "<pre>";
             echo "user has been deleted";
             echo "</pre>";
+            session_destroy();
         }
+    }
+
+    public function update($con,$login, $password, $email, $firstname, $lastname ){
+
+        $con = $this->con();
+        $session_to_update = $this->connect(@$con,@$login, @$password);
         
+        @$_SESSION['login'] = $_POST['login'];
+        @$login_session = $_SESSION['login'];
+        if(isset($_POST['update'])){
+        
+        @$newlogin = $_POST['newlogin'];
+        @$newpassword = $_POST['newpassword'];
+        @$newemail = $_POST['newemail'];
+        @$newfirstname = $_POST['newfirstname'];
+        @$newlastname = $_POST['newlastname'];
+        
+            $up = ("UPDATE `utilisateurs` SET `login`= :newlogin, `password`= :newpassword, `email`= :newemail, `firstname`= :newfirstname, `lastname`= :newlastname WHERE `login`= '$login_session'");
+
+            $update = $con->prepare($up);
+            $update->execute(array(
+                ":newlogin" => $newlogin,
+                ":newpassword" => $newpassword,
+                ":newemail" => $newemail,
+                ":newfirstname" => $newfirstname,
+                ":newlastname" => $newlastname
+            ));
+            
+        }
+        var_dump($login_session);
+    }
+
+    public function isConnected(){
+        $con = $this->con();
+        $session_connected = $this->connect(@$con,@$login, @$password);
+        $checking = $this->register(@$con, @$login, @$password, @$email, @$firstname, @$lastname);
+
+        if (isset($checking[0]["login"])){
+            echo $checking[0]["login"] . " " . "is connected";
+        }
+    }
+
+    public function getAllInfos(){
+        $con = $this->con();
+        
+        $get = ("SELECT * FROM `utilisateurs`");
+        $get_connect = $con->prepare($get);
+        $get_connect->execute();
+        $users = $get_connect->fetchAll();
+
+        foreach($users as $user){
+            echo "<pre>";
+            print_r($user);
+            echo "</pre>";
+        }
         
 
 
     }
-
-
+    public function getLogin(){
+        return $this->login;
+    }
+    public function getEmail(){
+        return $this->email;
+    }
+    public function getFirstname(){
+        return $this->firstname;
+    }
+    public function getLastname(){
+        return $this->lastname;
+    }
 }
 
 $user = new Userpdo();
 
 $user->con();
-// $user->register($con,$login, $password, $email, $firstname, $lastname);
-$user->connect(@$con,@$login,@$password);
+$user->register(@$con, @$login, @$password, @$email, @$firstname, @$lastname);
+$user->connect(@$con, @$login,@$password);
 // $user->disconnect();
-$user->delete();
+// $user->delete();
+// $user->update(@$con, @$newlogin, @$newpassword, @$newemail, @$newfirstname, @$newlastname);
+// $user->isConnected();
+// $user->getAllInfos();
+$user->getLogin();
+
 
 
 
